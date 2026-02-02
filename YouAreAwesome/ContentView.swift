@@ -41,9 +41,7 @@ struct ContentView: View {
                 .shadow(radius: 30)
                 .animation(.default, value: imageName)
             
-            
             Spacer()
-            
             
             HStack {
                 Text("Sound on: ")
@@ -54,7 +52,7 @@ struct ContentView: View {
                             audioPlayer.stop()
                         }
                     }
-                
+                    
                 Spacer()
                 
                 Button("Show Message") {
@@ -65,28 +63,25 @@ struct ContentView: View {
                                     "When the Genius Bar needs help, they call you!"]
                     
                     // Change message when button is pressed
-                    var messageNumber : Int
-                    messageNumber = nonRepeatingRandom(lastNumber: lastMessageNumber, upperBounds: messages.count-1)
-                    message = messages[messageNumber]
-                    lastMessageNumber = messageNumber
+                    lastMessageNumber = nonRepeatingRandom(lastNumber: lastMessageNumber, upperBounds: messages.count-1)
+                    message = messages[lastMessageNumber]
                     
                     // Change image when button is pressed
-                    var imageNumber : Int
-                    imageNumber = nonRepeatingRandom(lastNumber: lastImageNumber, upperBounds: numOfImages-1)
-                    imageName = "image\(imageNumber)"
-                    lastImageNumber = imageNumber
+                    lastImageNumber = nonRepeatingRandom(lastNumber: lastImageNumber, upperBounds: numOfImages-1)
+                    imageName = "image\(lastImageNumber)"
                     
                     // Change sound when button is pressed
-                    var soundNumber : Int
-                    soundNumber = nonRepeatingRandom(lastNumber: lastSoundNumber, upperBounds: numOfSounds-1)
-                    soundName = "sound\(soundNumber)"
-                    lastSoundNumber = soundNumber
-                    
-                    playAudio(soundName: soundName)
+                    lastSoundNumber = nonRepeatingRandom(lastNumber: lastSoundNumber, upperBounds: numOfSounds-1)
+                    soundName = "sound\(lastSoundNumber)"
+                    print("sound name is \(soundName)")
+                    if soundIsOn {
+                        playAudio(soundName: soundName)
+                    }
                 }
                 .buttonStyle(.borderedProminent)
                 .font(.title2)
             }
+            .tint(.accentColor)
         }
         .padding()
     }
@@ -94,13 +89,13 @@ struct ContentView: View {
     func nonRepeatingRandom (lastNumber: Int, upperBounds: Int) -> Int {
         var randomNumber : Int
         repeat {
-            randomNumber = Int.random(in: 0...upperBounds-1)
+            randomNumber = Int.random(in: 0...upperBounds)
         } while lastNumber == randomNumber
         return randomNumber
     }
     
     func playAudio (soundName: String) {
-        if audioPlayer != nil && audioPlayer.isPlaying && !soundIsOn {
+        if audioPlayer != nil && audioPlayer.isPlaying {
             audioPlayer.stop()
         }
         guard let soundFile = NSDataAsset(name: soundName) else {
@@ -117,8 +112,13 @@ struct ContentView: View {
     }
 }
 
-#Preview {
+#Preview("Light Mode"){
     ContentView()
+        .preferredColorScheme(.light)
+}
+#Preview("Dark Mode"){
+    ContentView()
+        .preferredColorScheme(.dark)
 }
 
 
